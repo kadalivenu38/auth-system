@@ -6,7 +6,6 @@ import User from './models/User.js'
 
 const app = express();
 const PORT = 4000;
-const MONGO_URI = "mongodb+srv://kadalivenu38:aswathama38@cluster1.jo7gkn8.mongodb.net/foodie-buzz?appName=Cluster1"
 
 // db connnection
 mongoose.connect(MONGO_URI)
