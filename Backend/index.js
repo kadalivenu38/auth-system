@@ -7,6 +7,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
+<<<<<<< HEAD
+=======
+const PORT = 4000;
+>>>>>>> cb19cae2b98bcd1fc84cadea8cb568bc955cfb1e
 
 // db connnection
 mongoose.connect(process.env.MONGO_URI)
