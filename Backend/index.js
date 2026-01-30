@@ -1,15 +1,15 @@
-import express from 'express'
-import cors from 'cors'
-import bcrypt from 'bcrypt'
-import mongoose from 'mongoose'
-import User from './models/User.js'
+import express from 'express';
+import cors from 'cors';
+import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
+import User from './models/User.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
-const PORT = 4000;
-const MONGO_URI = "mongodb+srv://kadalivenu38:aswathama38@cluster1.jo7gkn8.mongodb.net/foodie-buzz?appName=Cluster1"
 
 // db connnection
-mongoose.connect(MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
 .then(()=>{
     console.log("MongoDB Connected Succesfully...");
 })
@@ -27,7 +27,9 @@ app.get('/', (req, res)=>{
     res.status(200).json({message: "Welcome to Auth-System Home Page."})
 })
 app.post('/register', async (req, res)=>{
-    const {username, email, password} = req.body;
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
     try{
         const emailCheck = await User.findOne({email});
         if(emailCheck){
@@ -48,6 +50,6 @@ app.post('/register', async (req, res)=>{
     }
 })
 
-app.listen(PORT, ()=>{
-    console.log(`Server running on PORT: ${PORT}`);
+app.listen(process.env.PORT, ()=>{
+    console.log(`Server running on PORT: ${process.env.PORT}`);
 })

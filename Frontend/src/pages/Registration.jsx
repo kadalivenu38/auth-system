@@ -2,12 +2,13 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './Registration.css'
 import { useState } from 'react';
+import axiosClient from '../utils/axiosClient';
 
 export default function Signup() {
     const [userDetails, setUserDetails] = useState({
-        name: null,
-        email: null,
-        password: null
+        username: "",
+        email: "",
+        password: ""
     })
 
     function updateFieldData(fieldName, newValue){
@@ -17,8 +18,9 @@ export default function Signup() {
         }))
     }
 
-    function submitUserDetails(){
-        console.log(userDetails);
+    async function submitUserDetails(){
+        let res = await axiosClient.post('/register', userDetails);
+        alert("User Registered Successfully...");
     }
 
     return (
@@ -33,8 +35,8 @@ export default function Signup() {
                         <Form>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Name</Form.Label>
-                                <Form.Control type="email" placeholder="Enter Name" className='form-field' 
-                                value={userDetails.name} onChange={(e)=>{updateFieldData('name', e.target.value)}} />
+                                <Form.Control type="text" placeholder="Enter Name" className='form-field' 
+                                value={userDetails.username} onChange={(e)=>{updateFieldData('username', e.target.value)}} />
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Email address</Form.Label>
