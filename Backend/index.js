@@ -27,9 +27,7 @@ app.get('/', (req, res)=>{
     res.status(200).json({message: "Welcome to Auth-System Home Page."})
 })
 app.post('/register', async (req, res)=>{
-    const username = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
+    const {username, email, password} = req.body;
     try{
         const emailCheck = await User.findOne({email});
         if(emailCheck){
@@ -44,6 +42,27 @@ app.post('/register', async (req, res)=>{
         await newUser.save();
         res.status(201).json({message: "User Registered Successfully"});
         console.log("User Registered");
+    }catch(err){
+        res.status(500).json({error: "Internal Server Error!"})
+        console.error(err);
+    }
+})
+app.post('/login', async (req, res)=>{
+    const {username, email, password} = req.body;
+    try{
+        const emailCheck = await User.findOne({email});
+        if(emailCheck){
+            return res.status(400).json({message: "Email already exists!"});
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword
+        });
+        await newUser.save();
+        res.status(201).json({message: "User Login Successfully"});
+        console.log("User Logged In...");
     }catch(err){
         res.status(500).json({error: "Internal Server Error!"})
         console.error(err);

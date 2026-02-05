@@ -19,8 +19,16 @@ export default function Signup() {
     }
 
     async function submitUserDetails(){
-        let res = await axiosClient.post('/register', userDetails);
-        alert("User Registered Successfully...");
+        try {
+            const res = await axiosClient.post('/register', userDetails);
+            alert(res.data.message);
+        } catch (err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                alert(err.response.data.message);
+            } else {
+                alert("Something went wrong!");
+            }
+        }
     }
 
     return (
