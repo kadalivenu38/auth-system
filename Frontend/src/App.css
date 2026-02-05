@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Amarna:ital,wght@0,300;1,300&family=Cinzel:wght@400..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&family=Smooch+Sans:wght@100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.form-field{
+    box-shadow: 4px 4px 3px 1px blue;
+}
+.signup-form{
+    border: 2px outset green;
+    padding: 3% 6%;
+    border-radius: 3%;
+    background-color: rgb(202, 250, 205);
+    font-family: "Red Hat Display", sans-serif;
+    font-size: 1rem;
+    font-weight: 450;
+}
+.signup-form button{
+    font-family: "Amarna", sans-serif;
+    font-size: 19px;
+    padding: 0.5% 5%;
+}
+.heading{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    color: rgb(4, 73, 4);
+    margin-bottom: 15%;
+}

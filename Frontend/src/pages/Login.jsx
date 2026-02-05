@@ -3,9 +3,8 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
 
-export default function Signup({showLogin}) {
+export default function Login() {
     const [userDetails, setUserDetails] = useState({
-        name: "",
         email: "",
         password: ""
     })
@@ -19,11 +18,10 @@ export default function Signup({showLogin}) {
 
     async function submitUserDetails(){
         try {
-            if (userDetails.name && userDetails.email && userDetails.password){
-                const res = await axiosClient.post('/register', userDetails);
+            if (userDetails.email && userDetails.password){
+                const res = await axiosClient.post('/login', userDetails);
                 alert(res.data.message);
-                setUserDetails({name:"", email:"", password:""})
-                showLogin();
+                setUserDetails({email:"", password:""})
             }else{
                 alert("Fill the Input fields...");
             }
@@ -44,13 +42,8 @@ export default function Signup({showLogin}) {
                 </div>
                 <div className="right-half w-50 d-flex align-items-center">
                     <div className='w-75 signup-form'>
-                        <h1 className='heading'>Sign Up</h1>
+                        <h1 className='heading'>Login</h1>
                         <Form>
-                            <Form.Group className="mb-3 mt-5" controlId="formBasicEmail">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control type="text" placeholder="Enter Name" className='form-field' name='name'
-                                value={userDetails.name} onChange={(e)=>{updateFieldData('name', e.target.value)}} />
-                            </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control type="email" placeholder="Enter email" className='form-field' name='email'
@@ -65,11 +58,11 @@ export default function Signup({showLogin}) {
                                 <Form.Check type="checkbox" label="Check me out" />
                             </Form.Group>
                             <Button variant="primary" type="button" onClick={()=>{submitUserDetails()}}>
-                                Signup
+                                Login
                             </Button>
                         </Form>
                         <p>
-                            Already registered? <a href='#' style={{ textDecoration:'underline' }} >LogIn</a>
+                            Don't have an account <a href='#' style={{ textDecoration:'underline', color:'rgb(21, 17, 235)' }} >Signup</a>
                         </p>
                     </div>
                 </div>
