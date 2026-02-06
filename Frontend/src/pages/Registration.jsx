@@ -69,7 +69,7 @@ export default function Signup({showLogin}) {
                             </Button>
                         </Form>
                         <p>
-                            Already registered? <a href='#' style={{ textDecoration:'underline' }} >LogIn</a>
+                          Already registered? <span onClick={()=>showLogin()} style={{textDecoration:'underline', color:'blue', cursor:'pointer'}}>LogIn</span>
                         </p>
                     </div>
                 </div>

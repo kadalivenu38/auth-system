@@ -3,6 +3,7 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import User from './models/User.js';
+import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -27,7 +28,7 @@ app.get('/', (req, res)=>{
     res.status(200).json({message: "Welcome to Auth-System Home Page."})
 })
 app.post('/register', async (req, res)=>{
-    const {username, email, password} = req.body;
+    const {name, email, password} = req.body;
     try{
         const emailCheck = await User.findOne({email});
         if(emailCheck){
@@ -35,7 +36,7 @@ app.post('/register', async (req, res)=>{
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
-            username,
+            name,
             email,
             password: hashedPassword
         });
@@ -48,21 +49,16 @@ app.post('/register', async (req, res)=>{
     }
 })
 app.post('/login', async (req, res)=>{
-    const {username, email, password} = req.body;
+    const {email, password} = req.body;
     try{
-        const emailCheck = await User.findOne({email});
-        if(emailCheck){
-            return res.status(400).json({message: "Email already exists!"});
+        const user = await User.findOne({email});
+        if(!user || !(await bcrypt.compare(password, user.password)) ){
+            return res.status(400).json({message: "Invalid email or password!"});
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({
-            username,
-            email,
-            password: hashedPassword
-        });
-        await newUser.save();
-        res.status(201).json({message: "User Login Successfully"});
-        console.log("User Logged In...");
+        const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const username = user.name;
+
+        res.status(200).json({message: "User Login Successfully.", token, username})
     }catch(err){
         res.status(500).json({error: "Internal Server Error!"})
         console.error(err);

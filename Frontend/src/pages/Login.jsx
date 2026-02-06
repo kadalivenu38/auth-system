@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
 
-export default function Login() {
+export default function Login({showRegister, showHome}) {
     const [userDetails, setUserDetails] = useState({
         email: "",
         password: ""
@@ -21,7 +21,10 @@ export default function Login() {
             if (userDetails.email && userDetails.password){
                 const res = await axiosClient.post('/login', userDetails);
                 alert(res.data.message);
+                localStorage.setItem('token', res.data.token);
+                localStorage.setItem('name', res.data.username);
                 setUserDetails({email:"", password:""})
+                showHome();
             }else{
                 alert("Fill the Input fields...");
             }
@@ -62,7 +65,7 @@ export default function Login() {
                             </Button>
                         </Form>
                         <p>
-                            Don't have an account <a href='#' style={{ textDecoration:'underline', color:'rgb(21, 17, 235)' }} >Signup</a>
+                          Don't have an account? <span onClick={()=>showRegister()} style={{textDecoration:'underline', color:'blue', cursor:'pointer'}}>Signup</span>
                         </p>
                     </div>
                 </div>
