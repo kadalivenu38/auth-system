@@ -2,12 +2,13 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
+import { Link } from 'react-router-dom';
 
-export default function Signup({showLogin}) {
+export default function Signup() {
     const [userDetails, setUserDetails] = useState({
-        name: "",
-        email: "",
-        password: ""
+        name: null,
+        email: null,
+        password: null
     })
 
     function updateFieldData(fieldName, newValue){
@@ -23,7 +24,6 @@ export default function Signup({showLogin}) {
                 const res = await axiosClient.post('/register', userDetails);
                 alert(res.data.message);
                 setUserDetails({name:"", email:"", password:""})
-                showLogin();
             }else{
                 alert("Fill the Input fields...");
             }
@@ -46,7 +46,7 @@ export default function Signup({showLogin}) {
                     <div className='w-75 signup-form'>
                         <h1 className='heading'>Sign Up</h1>
                         <Form>
-                            <Form.Group className="mb-3 mt-5" controlId="formBasicEmail">
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control type="text" placeholder="Enter Name" className='form-field' name='name'
                                 value={userDetails.name} onChange={(e)=>{updateFieldData('name', e.target.value)}} />
@@ -56,20 +56,17 @@ export default function Signup({showLogin}) {
                                 <Form.Control type="email" placeholder="Enter email" className='form-field' name='email'
                                 value={userDetails.email} onChange={(e)=>{updateFieldData('email', e.target.value)}} />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="formBasicPassword">
+                            <Form.Group controlId="formBasicPassword">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="Password" className='form-field' name='password'
                                 value={userDetails.password} onChange={(e)=>{updateFieldData('password', e.target.value)}} />
-                            </Form.Group>
-                            <Form.Group className="mb-5" controlId="formBasicCheckbox">
-                                <Form.Check type="checkbox" label="Check me out" />
                             </Form.Group>
                             <Button variant="primary" type="button" onClick={()=>{submitUserDetails()}}>
                                 Signup
                             </Button>
                         </Form>
-                        <p>
-                          Already registered? <span onClick={()=>showLogin()} style={{textDecoration:'underline', color:'blue', cursor:'pointer'}}>LogIn</span>
+                        <p className='mt-2'>
+                          Already registered? <Link to={'/login'}>Login</Link>
                         </p>
                     </div>
                 </div>

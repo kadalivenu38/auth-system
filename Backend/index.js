@@ -32,7 +32,7 @@ app.post('/register', async (req, res)=>{
     try{
         const emailCheck = await User.findOne({email});
         if(emailCheck){
-            return res.status(400).json({message: "Email already exists!"});
+            return res.status(401).json({message: "Email already exists!"});
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
@@ -53,7 +53,7 @@ app.post('/login', async (req, res)=>{
     try{
         const user = await User.findOne({email});
         if(!user || !(await bcrypt.compare(password, user.password)) ){
-            return res.status(400).json({message: "Invalid email or password!"});
+            return res.status(401).json({message: "Invalid email or password!"});
         }
         const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         const username = user.name;

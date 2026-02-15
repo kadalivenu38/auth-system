@@ -6,27 +6,30 @@
     box-sizing: border-box;
 }
 .form-field{
-    box-shadow: 4px 4px 3px 1px blue;
+    box-shadow: 4px 4px 4px rgba(0, 0, 255, 0.75);
 }
-.signup-form{
+.signup-form, .login-form, .forgot-password, .reset-password{
     border: 2px outset green;
-    padding: 3% 6%;
-    border-radius: 3%;
+    padding: 2% 6%;
+    border-radius: 15px;
     background-color: rgb(202, 250, 205);
     font-family: "Red Hat Display", sans-serif;
     font-size: 1rem;
     font-weight: 450;
 }
-.signup-form button{
+.signup-form button, .login-form button, 
+.forgot-password button, .reset-password button{
     font-family: "Amarna", sans-serif;
     font-size: 19px;
     padding: 0.5% 5%;
+    margin-top: 10%;
+    word-spacing: 2px;
 }
 .heading{
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-align: center;
     color: rgb(4, 73, 4);
-    margin-bottom: 15%;
+    margin-bottom: 10%;
 }
 .home{
     width: 100vw;
