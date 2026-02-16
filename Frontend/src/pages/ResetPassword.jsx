@@ -2,9 +2,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function ResetPassword() {
+    const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({
         newPassword: null,
         confirmPassword: null
@@ -15,6 +16,11 @@ function ResetPassword() {
             ...prevDetails,
             [fieldName] : newValue
         }))
+    }
+
+    function updatePassword() {
+        alert("Password Reset successfully");
+        navigate('/login');
     }
 
     return (
@@ -37,7 +43,7 @@ function ResetPassword() {
                                 <Form.Control type="password" placeholder="Re-Enter the password" className='form-field' name='confirmPassword'
                                 value={userDetails.confirmPassword} onChange={(e)=>{updateFieldData('confirmPassword', e.target.value)}} />
                             </Form.Group>
-                            <Button variant="primary" type="button">Reset Password</Button>
+                            <Button variant="primary" type="button" onClick={updatePassword}>Reset Password</Button>
                         </Form>
                         <p className='mt-2'>
                           Not needed, <Link to={'/login'}>Cancel</Link>

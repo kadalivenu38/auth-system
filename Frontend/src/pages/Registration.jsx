@@ -2,9 +2,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Signup() {
+    const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({
         name: null,
         email: null,
@@ -24,6 +25,7 @@ export default function Signup() {
                 const res = await axiosClient.post('/register', userDetails);
                 alert(res.data.message);
                 setUserDetails({name:"", email:"", password:""})
+                navigate('/login');
             }else{
                 alert("Fill the Input fields...");
             }

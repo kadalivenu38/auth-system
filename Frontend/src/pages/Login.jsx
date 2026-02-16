@@ -2,9 +2,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({
         email: null,
         password: null
@@ -26,6 +27,7 @@ export default function Login() {
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('name', res.data.username);
                 setUserDetails({ email:"", password:"" })
+                navigate('/home');
             } else {
                 alert("Fill the Input fields...");
             }
@@ -65,7 +67,7 @@ export default function Login() {
                         </Form>
                         {
                         showForgotPassword ?
-                            <p className='mt-2'>Don't remember the password? <Link to={'/forgot-password'}>Forgot Password</Link></p>
+                            <p className='mt-2' style={{color:'red', fontWeight:'600'}}>Don't remember the password? <Link to={'/forgot-password'}>Forgot Password</Link></p>
                             : <p className='mt-2'>Don't have an account? <Link to={'/'}>Signup</Link></p>
                         }
                     </div>
