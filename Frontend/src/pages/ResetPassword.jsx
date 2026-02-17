@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function ResetPassword() {
     const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({
+        email: "",
         newPassword: "",
         confirmPassword: ""
     })
@@ -18,9 +19,30 @@ function ResetPassword() {
         }))
     }
 
-    function updatePassword() {
-        alert("Password Reset successfully");
-        navigate('/login');
+    async function updatePassword() {
+        if(!userDetails.newPassword || !userDetails.confirmPassword){
+            alert("All fields are required to reset password.");
+            return;
+        // }else if(userDetails.newPassword.length < 6){
+        //     alert("Password must be at least 6 characters");
+        //     return;
+        }else if(userDetails.newPassword !== userDetails.confirmPassword){
+            alert("New password and Confirm password should be same.");
+            return;
+        }
+        try{
+            userDetails.email = localStorage.getItem('email');
+            const res = await axiosClient.post('/user/reset-password', userDetails);
+            if(res.status==200){
+                alert(res.data.message);
+                localStorage.removeItem('email');
+                navigate('/login');
+            }
+        } catch(err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                alert(err.response.data.message);
+            }
+        }
     }
 
     return (

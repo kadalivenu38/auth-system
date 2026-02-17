@@ -2,6 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
+import ResetPassword from './ResetPassword';
 import { Link, useNavigate } from 'react-router-dom';
 
 function ForgotPassword() {
@@ -37,13 +38,22 @@ function ForgotPassword() {
             setWaitStatus(false);
         }
     }
-    function verifyOtp() {
-        // axiosClient.post('/forgot-password/'+userDetails.email)
-        if (!userDetails.otp) {
-            alert("Please enter OTP...");
-        } else {
-            alert("Otp successfully verified");
-            navigate('/reset-password');
+    async function verifyOtp() {
+        if(!userDetails.otp){
+            alert("OTP Required!.");
+            return;
+        }
+        try{
+            const res = await axiosClient.post('/user/verify-otp', userDetails);
+            if(res.status==200){
+                alert(res.data.message);
+                localStorage.setItem('email', userDetails.email);
+                navigate('/reset-password');
+            }
+        } catch(err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                alert(err.response.data.message);
+            }
         }
     }
 

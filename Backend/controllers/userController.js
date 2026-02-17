@@ -41,7 +41,7 @@ const Login = async (req, res)=>{
     }
 }
 
-const forgotPassword = async(req, res)=>{
+const forgotPassword = async (req, res)=>{
     const email = req.body.email;
     try{
         const user = await User.findOne({email});
@@ -60,4 +60,42 @@ const forgotPassword = async(req, res)=>{
     }
 }
 
-export { Register, Login, forgotPassword};
+const verifyOtp = async (req, res)=>{
+    const {email, otp} = req.body;
+    try{
+        const user = await User.findOne({email});
+        if(otp!==user.otp || Date.now() > user.otpExpires){
+            return res.status(404).json({message: "Invalid OTP!"});
+        }
+        return res.status(200).json({message: "OTP verified successfully."});
+    } catch(err) {
+        res.status(500).json({error: "Internal Server Error!"})
+        console.error(err);
+    }
+}
+
+const resetPassword = async (req, res)=>{
+    const {email, newPassword, confirmPassword} = req.body;
+    try{
+        if(newPassword!==confirmPassword){
+            return res.status(401).json({message: "New Password and Confirm Password not Matched!."});
+        }
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(409).json({message: "No user found, with this Email."});
+        }
+        if(await bcrypt.compare(confirmPassword, user.password)){
+            return res.status(409).json({message: "This password was already used!"});
+        }
+        user.password = await bcrypt.hash(confirmPassword, 10);
+        user.otp = null;
+        user.otpExpires = null;
+        await user.save();
+        res.status(200).json({message: "Password reset was successfull."});
+    } catch(err) {
+        res.status(500).json({error: "Internal Server Error!"})
+        console.error(err);
+    }
+}
+
+export { Register, Login, forgotPassword, verifyOtp, resetPassword};
