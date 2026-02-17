@@ -7,9 +7,9 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Signup() {
     const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({
-        name: null,
-        email: null,
-        password: null
+        name: "",
+        email: "",
+        password: ""
     })
 
     function updateFieldData(fieldName, newValue){
@@ -22,18 +22,16 @@ export default function Signup() {
     async function submitUserDetails(){
         try {
             if (userDetails.name && userDetails.email && userDetails.password){
-                const res = await axiosClient.post('/register', userDetails);
+                const res = await axiosClient.post('/user/register', userDetails);
                 alert(res.data.message);
                 setUserDetails({name:"", email:"", password:""})
                 navigate('/login');
             }else{
-                alert("Fill the Input fields...");
+                alert("All fields are required to register.");
             }
         } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {
                 alert(err.response.data.message);
-            } else {
-                alert("Something went wrong!");
             }
         }
     }

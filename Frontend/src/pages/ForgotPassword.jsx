@@ -7,10 +7,11 @@ import { Link, useNavigate } from 'react-router-dom';
 function ForgotPassword() {
     const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({
-        email: null,
-        OTP: null
+        email: "",
+        otp: ""
     })
     const [otpSentStatus, setOtpSentStatus] = useState(false);
+    const [waitStatus, setWaitStatus] = useState(false);
 
     function updateFieldData(fieldName, newValue) {
         setUserDetails(prevDetails => ({
@@ -19,17 +20,26 @@ function ForgotPassword() {
         }))
     }
 
-    function sendOtp() {
-        // axiosClient.post('/forgot-password/'+userDetails.email)
-        if (userDetails.email) {
+    async function sendOtp() {
+        if (!userDetails.email) {
+            return alert("Please enter your Email...");
+        }
+        try {
+            setWaitStatus(true);
+            const res = await axiosClient.post('/user/forgot-password/', { email: userDetails.email });
+            alert(res.data.message);
             setOtpSentStatus(true);
-        } else {
-            alert("Please enter your Email...");
+        } catch (err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                alert(err.response.data.message);
+            }
+        } finally {
+            setWaitStatus(false);
         }
     }
     function verifyOtp() {
         // axiosClient.post('/forgot-password/'+userDetails.email)
-        if (!userDetails.OTP) {
+        if (!userDetails.otp) {
             alert("Please enter OTP...");
         } else {
             alert("Otp successfully verified");
@@ -53,17 +63,20 @@ function ForgotPassword() {
                                 <Form.Control disabled={otpSentStatus} type="email" placeholder="Enter email" className='form-field' name='email'
                                     value={userDetails.email} onChange={(e) => { updateFieldData('email', e.target.value) }} />
                             </Form.Group>
-                            {otpSentStatus ?
+                            {otpSentStatus ? (
                                 <>
                                     <Form.Group controlId="formBasicEmail">
                                         <Form.Label className='mt-2'>OTP</Form.Label>
-                                        <Form.Control type="text" placeholder="Enter Otp" className='form-field' name='OTP'
-                                            value={userDetails.OTP} onChange={(e) => { updateFieldData('OTP', e.target.value) }} />
+                                        <Form.Control type="text" placeholder="Enter Otp" className='form-field' name='otp' value={userDetails.otp} onChange={(e) => updateFieldData('otp', e.target.value)}/>
                                     </Form.Group>
+
                                     <Button variant="primary" type="button" onClick={verifyOtp}>Verify Otp</Button>
-                                </> :
-                                <Button variant="primary" type="button" onClick={sendOtp} >Send Otp</Button>
-                            }
+                                </>
+                            ) : waitStatus ? (
+                                <Button disabled variant="primary" type="button" onClick={sendOtp}>Sending OTP...</Button>
+                            ) : (
+                                <Button variant="primary" type="button" onClick={sendOtp}>Send Otp</Button>
+                            )}
                         </Form>
                         <p className='mt-2'>
                             Not needed. <Link to={'/login'}>Cancel</Link>

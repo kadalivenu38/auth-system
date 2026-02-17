@@ -7,8 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Login() {
     const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({
-        email: null,
-        password: null
+        email: "",
+        password: ""
     })
     const [showForgotPassword, setShowForgotPassword] = useState(false);
 
@@ -22,21 +22,19 @@ export default function Login() {
     async function submitUserDetails() {
         try {
             if (userDetails.email && userDetails.password) {
-                const res = await axiosClient.post('/login', userDetails);
+                const res = await axiosClient.post('/user/login', userDetails);
                 alert(res.data.message);
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('name', res.data.username);
                 setUserDetails({ email:"", password:"" })
                 navigate('/home');
             } else {
-                alert("Fill the Input fields...");
+                alert("All fields are required to login.");
             }
         } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {
                 alert(err.response.data.message);
                 setShowForgotPassword(true);
-            } else {
-                alert("Something went wrong!");
             }
         }
     }

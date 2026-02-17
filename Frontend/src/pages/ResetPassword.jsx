@@ -7,8 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 function ResetPassword() {
     const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({
-        newPassword: null,
-        confirmPassword: null
+        newPassword: "",
+        confirmPassword: ""
     })
 
     function updateFieldData(fieldName, newValue){
