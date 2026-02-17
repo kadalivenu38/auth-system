@@ -59,9 +59,9 @@ function ForgotPassword() {
 
     return (
         <>
-            <div className="d-flex" style={{ height: '100vh', backgroundColor: 'rgb(253, 253, 239)' }}>
+            <div className="d-flex" style={{ height: '100vh', backgroundColor: '#e8f1fb' }}>
                 <div className="left-half w-50 d-flex align-items-center" style={{ maxHeight: '100%', overflow: 'hidden' }}>
-                    <img src="/auth.jpg" alt="auth-system" style={{ width: '80%', marginLeft: '10%' }} />
+                    <img src="/auth2.jpg" alt="auth-system" style={{ width: '80%', marginLeft: '10%' }} />
                 </div>
                 <div className="right-half w-50 d-flex align-items-center">
                     <div className='w-75 forgot-password'>
