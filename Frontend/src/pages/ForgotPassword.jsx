@@ -1,8 +1,8 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
-import axiosClient from '../utils/axiosClient';
-import ResetPassword from './ResetPassword';
+import { useState, useEffect } from 'react';
+import axiosClient from '../utils/axiosClient.js';
+import formatTime from '../utils/formatTime.js';
 import { Link, useNavigate } from 'react-router-dom';
 
 function ForgotPassword() {
@@ -13,6 +13,18 @@ function ForgotPassword() {
     })
     const [otpSentStatus, setOtpSentStatus] = useState(false);
     const [waitStatus, setWaitStatus] = useState(false);
+    const [timer, setTimer] = useState(0);
+
+    useEffect(() => {
+        let interval = null;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer(prev => prev - 1);
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [timer]);
 
     function updateFieldData(fieldName, newValue) {
         setUserDetails(prevDetails => ({
@@ -23,13 +35,18 @@ function ForgotPassword() {
 
     async function sendOtp() {
         if (!userDetails.email) {
-            return alert("Please enter your Email...");
+            alert("Please enter your Email...");
+            return;
         }
         try {
             setWaitStatus(true);
             const res = await axiosClient.post('/user/forgot-password/', { email: userDetails.email });
-            alert(res.data.message);
-            setOtpSentStatus(true);
+            if (res.status === 200) {
+                setOtpSentStatus(true);
+                setTimer(60);
+                alert(res.data.message);
+                updateFieldData('otp', "");
+            }
         } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {
                 alert(err.response.data.message);
@@ -39,21 +56,27 @@ function ForgotPassword() {
         }
     }
     async function verifyOtp() {
-        if(!userDetails.otp){
+        if (!userDetails.otp) {
             alert("OTP Required!.");
             return;
         }
-        try{
+        try {
             const res = await axiosClient.post('/user/verify-otp', userDetails);
-            if(res.status==200){
+            if (res.status === 200) {
                 alert(res.data.message);
                 localStorage.setItem('email', userDetails.email);
                 navigate('/reset-password');
             }
-        } catch(err) {
+        } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {
                 alert(err.response.data.message);
             }
+        }
+    }
+
+    function cancelFun() {
+        if (userDetails.email) {
+            axiosClient.post('/user/reset-cancel', { email: userDetails.email });
         }
     }
 
@@ -77,19 +100,26 @@ function ForgotPassword() {
                                 <>
                                     <Form.Group controlId="formBasicEmail">
                                         <Form.Label className='mt-2'>OTP</Form.Label>
-                                        <Form.Control type="text" placeholder="Enter Otp" className='form-field' name='otp' value={userDetails.otp} onChange={(e) => updateFieldData('otp', e.target.value)}/>
+                                        <div className='timer'>
+                                            <p>{timer > 0 ? formatTime(timer) : "Expired"}</p>
+                                        </div>
+                                        <Form.Control type="text" placeholder="Enter Otp" className='form-field' name='otp' value={userDetails.otp} onChange={(e) => updateFieldData('otp', e.target.value)} />
                                     </Form.Group>
-
-                                    <Button variant="primary" type="button" onClick={verifyOtp}>Verify Otp</Button>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <Button variant="primary" type="button" onClick={verifyOtp}>Verify Otp</Button>
+                                        <Button disabled={waitStatus} variant="primary" type="button" onClick={sendOtp} hidden={timer > 0} >
+                                            {waitStatus ? "Resending..." : "Resend OTP"}
+                                        </Button>
+                                    </div>
                                 </>
                             ) : waitStatus ? (
-                                <Button disabled variant="primary" type="button" onClick={sendOtp}>Sending OTP...</Button>
+                                <Button disabled variant="primary" type="button">Sending OTP...</Button>
                             ) : (
                                 <Button variant="primary" type="button" onClick={sendOtp}>Send Otp</Button>
                             )}
                         </Form>
                         <p className='mt-2'>
-                            Not needed. <Link to={'/login'}>Cancel</Link>
+                            Not needed. <Link to={'/login'} onClick={cancelFun}>Cancel</Link>
                         </p>
                     </div>
                 </div>

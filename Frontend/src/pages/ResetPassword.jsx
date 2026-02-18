@@ -50,7 +50,7 @@ function ResetPassword() {
         try {
             userDetails.email = localStorage.getItem('email');
             const res = await axiosClient.post('/user/reset-password', userDetails);
-            if (res.status == 200) {
+            if (res.status === 200) {
                 alert(res.data.message);
                 localStorage.removeItem('email');
                 navigate('/login');
@@ -58,7 +58,16 @@ function ResetPassword() {
         } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {
                 alert(err.response.data.message);
+                if(err.status === 403){
+                    navigate('/forgot-password');
+                }
             }
+        }
+    }
+
+    function cancelFun() {
+        if(userDetails.email){
+            axiosClient.post('/user/reset-cancel', {email: userDetails.email});
         }
     }
 
@@ -103,7 +112,7 @@ function ResetPassword() {
                             <Button variant="primary" type="button" onClick={updatePassword}>Reset Password</Button>
                         </Form>
                         <p className='mt-2'>
-                            Not needed, <Link to={'/login'}>Cancel</Link>
+                            Not needed, <Link to={'/login'} onClick={cancelFun}>Cancel</Link>
                         </p>
                     </div>
                 </div>

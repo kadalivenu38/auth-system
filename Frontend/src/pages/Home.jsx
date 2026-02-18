@@ -9,7 +9,7 @@ export default function HomePage() {
         const conMsg = confirm("Are you sure, Do you want to Logout.?");
         if (conMsg) {
             localStorage.clear();
-            navigate('/');
+            navigate('/login');
         }
     }
 

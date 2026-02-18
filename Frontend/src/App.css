@@ -103,3 +103,12 @@
 .password-wrapper input::-ms-clear {
   display: none;
 }
+.timer{
+    position: absolute;
+    right: 245px;
+    bottom: 275px;
+    letter-spacing: 2px;
+    font-size: 1.05rem;
+    color: red;
+    z-index: 1;
+}
